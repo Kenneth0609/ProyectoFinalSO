@@ -7,16 +7,16 @@ try {
     $identificacion = isset($_GET["identificacion"]) ? trim($_GET["identificacion"]) : "";
 
     if ($identificacion !== "") {
-        $sql = "SELECT id, identificacion, nombre, correo 
-                FROM estudiantes 
+        $sql = "SELECT id, identificacion, nombre, correo
+                FROM estudiantes
                 WHERE identificacion = :identificacion";
 
         $stmt = $conexion->prepare($sql);
         $stmt->bindParam(":identificacion", $identificacion);
         $stmt->execute();
     } else {
-        $sql = "SELECT id, identificacion, nombre, correo 
-                FROM estudiantes 
+        $sql = "SELECT id, identificacion, nombre, correo
+                FROM estudiantes
                 ORDER BY id ASC";
 
         $stmt = $conexion->prepare($sql);

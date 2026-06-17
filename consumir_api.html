@@ -6,11 +6,22 @@
     <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
+    <header class="barra-superior">
+        <div>
+            <strong>Consumo de API</strong>
+        </div>
+        <nav>
+            <a href="index.php">Volver al CRUD</a>
+            <a href="api_estudiantes.php" target="_blank">Ver JSON</a>
+        </nav>
+    </header>
+
     <main class="contenedor">
         <h1>Consumo de API con JavaScript</h1>
+        <p>Esta página consume la API desarrollada en PHP utilizando fetch().</p>
 
         <section class="busqueda">
-            <input type="text" id="identificacion" placeholder="Digite la identificación">
+            <input type="text" id="identificacion" placeholder="Digite identificación">
             <button onclick="buscarEstudiante()">Buscar</button>
             <button onclick="cargarEstudiantes()">Mostrar todos</button>
         </section>
@@ -26,8 +37,7 @@
                     <th>Correo</th>
                 </tr>
             </thead>
-            <tbody id="tabla-estudiantes">
-            </tbody>
+            <tbody id="tabla-estudiantes"></tbody>
         </table>
     </main>
 
@@ -70,6 +80,12 @@
             const total = document.getElementById("total");
 
             tabla.innerHTML = "";
+
+            if (resultado.estado !== "ok") {
+                total.textContent = "Error al cargar datos.";
+                return;
+            }
+
             total.textContent = `Total de registros encontrados: ${resultado.total}`;
 
             resultado.datos.forEach(estudiante => {
