@@ -1,47 +1,4 @@
 <?php
-require_once "conexion.php";
-
-$sql = "SELECT id, identificacion, nombre, correo FROM estudiantes ORDER BY id ASC";
-$stmt = $conexion->prepare($sql);
-$stmt->execute();
-$estudiantes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-?>
-
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Listado de Estudiantes</title>
-    <link rel="stylesheet" href="estilos.css">
-</head>
-<body>
-    <main class="contenedor">
-        <h1>Listado de Estudiantes</h1>
-        <p>Aplicación web ejecutándose en Banana Pi con Apache, PHP y MariaDB.</p>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Identificación</th>
-                    <th>Nombre</th>
-                    <th>Correo</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($estudiantes as $estudiante): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($estudiante["id"]); ?></td>
-                        <td><?php echo htmlspecialchars($estudiante["identificacion"]); ?></td>
-                        <td><?php echo htmlspecialchars($estudiante["nombre"]); ?></td>
-                        <td><?php echo htmlspecialchars($estudiante["correo"]); ?></td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </main>
-</body>
-</html><?php
 require_once "auth.php";
 require_once "conexion.php";
 
@@ -69,7 +26,10 @@ if (isset($_GET["eliminar"])) {
 if (isset($_GET["editar"])) {
     $id = intval($_GET["editar"]);
 
-    $sql = "SELECT id, identificacion, nombre, correo FROM estudiantes WHERE id = :id";
+    $sql = "SELECT id, identificacion, nombre, correo 
+            FROM estudiantes 
+            WHERE id = :id";
+
     $stmt = $conexion->prepare($sql);
     $stmt->bindParam(":id", $id, PDO::PARAM_INT);
     $stmt->execute();
@@ -77,7 +37,7 @@ if (isset($_GET["editar"])) {
     $estudianteEditar = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
-// Insertar o actualizar
+// Insertar o actualizar estudiante
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $id = isset($_POST["id"]) ? intval($_POST["id"]) : 0;
     $identificacion = trim($_POST["identificacion"]);
@@ -123,7 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 
-// Mensajes
+// Mensajes por URL
 if (isset($_GET["mensaje"])) {
     if ($_GET["mensaje"] === "insertado") {
         $mensaje = "Estudiante insertado correctamente.";
@@ -135,9 +95,13 @@ if (isset($_GET["mensaje"])) {
 }
 
 // Listar estudiantes
-$sql = "SELECT id, identificacion, nombre, correo FROM estudiantes ORDER BY id ASC";
+$sql = "SELECT id, identificacion, nombre, correo 
+        FROM estudiantes 
+        ORDER BY id ASC";
+
 $stmt = $conexion->prepare($sql);
 $stmt->execute();
+
 $estudiantes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -153,6 +117,7 @@ $estudiantes = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div>
             <strong>Proyecto Banana Pi</strong>
         </div>
+
         <nav>
             <span>Usuario: <?php echo htmlspecialchars($_SESSION["usuario"]); ?></span>
             <a href="consumir_api.html">Consumir API</a>
@@ -163,7 +128,7 @@ $estudiantes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <main class="contenedor">
         <h1>CRUD de Estudiantes</h1>
-        <p>Aplicación web ejecutándose en Banana Pi con Apache, PHP y MariaDB.</p>
+        <p>Aplicación web ejecutándose con Apache, PHP y MariaDB.</p>
 
         <?php if ($mensaje !== ""): ?>
             <div class="mensaje">
@@ -172,10 +137,16 @@ $estudiantes = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <?php endif; ?>
 
         <section class="formulario">
-            <h2><?php echo $estudianteEditar ? "Editar estudiante" : "Agregar estudiante"; ?></h2>
+            <h2>
+                <?php echo $estudianteEditar ? "Editar estudiante" : "Agregar estudiante"; ?>
+            </h2>
 
             <form method="POST" action="index.php">
-                <input type="hidden" name="id" value="<?php echo $estudianteEditar ? htmlspecialchars($estudianteEditar["id"]) : ""; ?>">
+                <input 
+                    type="hidden" 
+                    name="id" 
+                    value="<?php echo $estudianteEditar ? htmlspecialchars($estudianteEditar["id"]) : ""; ?>"
+                >
 
                 <label>Identificación</label>
                 <input 
@@ -226,6 +197,7 @@ $estudiantes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <th>Acciones</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     <?php foreach ($estudiantes as $estudiante): ?>
                         <tr>
@@ -234,7 +206,13 @@ $estudiantes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <td><?php echo htmlspecialchars($estudiante["nombre"]); ?></td>
                             <td><?php echo htmlspecialchars($estudiante["correo"]); ?></td>
                             <td class="acciones">
-                                <a class="btn-editar" href="index.php?editar=<?php echo $estudiante["id"]; ?>">Editar</a>
+                                <a 
+                                    class="btn-editar" 
+                                    href="index.php?editar=<?php echo $estudiante["id"]; ?>"
+                                >
+                                    Editar
+                                </a>
+
                                 <a 
                                     class="btn-eliminar" 
                                     href="index.php?eliminar=<?php echo $estudiante["id"]; ?>"

@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 $usuarios = [
     "kenneth" => "kenneth",
@@ -45,10 +47,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             <form method="POST" action="login.php">
                 <label>Usuario</label>
-                <input type="text" name="usuario" required placeholder="Ejemplo: kenneth">
+                <input 
+                    type="text" 
+                    name="usuario" 
+                    required 
+                    placeholder="Ejemplo: kenneth"
+                >
 
                 <label>Contraseña</label>
-                <input type="password" name="password" required placeholder="Ejemplo: kenneth">
+                <input 
+                    type="password" 
+                    name="password" 
+                    required 
+                    placeholder="Ejemplo: kenneth"
+                >
 
                 <button type="submit">Ingresar</button>
             </form>
